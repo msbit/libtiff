@@ -483,34 +483,22 @@ static void geotiffTagsCopy(TIFF *in, TIFF *out)
     void *data;
 
     //  ModelPixelScaleTag
-    if (TIFFGetField(in, 0x830e, &count, &data)) {
-        TIFFSetField(out, 0x830e, count, data);
-    }
+    CopyField2(0x830e, count, data);
 
     //  ModelTiepointTag
-    if (TIFFGetField(in, 0x8482, &count, &data)) {
-        TIFFSetField(out, 0x8482, count, data);
-    }
+    CopyField2(0x8482, count, data);
 
     //  GeoKeyDirectoryTag
-    if (TIFFGetField(in, 0x87af, &count, &data)) {
-        TIFFSetField(out, 0x87af, count, data);
-    }
+    CopyField2(0x87af, count, data);
 
     //  GeoDoubleParamsTag
-    if (TIFFGetField(in, 0x87b0, &count, &data)) {
-        TIFFSetField(out, 0x87b0, count, data);
-    }
+    CopyField2(0x87b0, count, data);
 
     //  GeoAsciiParamsTag
-    if (TIFFGetField(in, 0x87b1, &count, &data)) {
-        TIFFSetField(out, 0x87b1, count, data);
-    }
+    CopyField2(0x87b1, count, data);
 
     //  GDAL_NODATA
-    if (TIFFGetField(in, 0xa481, &count, &data)) {
-        TIFFSetField(out, 0xa481, count, data);
-    }
+    CopyField2(0xa481, count, data);
 }
 
 static void usage(int code)
