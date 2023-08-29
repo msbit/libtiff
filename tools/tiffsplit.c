@@ -472,6 +472,8 @@ static void geotiffTagsAdd(TIFF *in, TIFF *out)
         {0x87b0, -1, -1, TIFF_DOUBLE, FIELD_CUSTOM, 1, 1, "GeoDoubleParamsTag"},
         {0x87b1, -1, TIFF_VARIABLE2, TIFF_ASCII, FIELD_CUSTOM, 1, 1,
          "GeoAsciiParamsTag"},
+        {0xa481, -1, TIFF_VARIABLE2, TIFF_ASCII, FIELD_CUSTOM, 1, 1,
+         "GDAL_NODATA"},
     };
 
     TIFFMergeFieldInfo(out, custom, sizeof(custom) / sizeof(*custom));
@@ -510,6 +512,12 @@ static void geotiffTagsCopy(TIFF *in, TIFF *out)
     if (TIFFGetField(in, 0x87b1, &count, &data))
     {
         TIFFSetField(out, 0x87b1, count, data);
+    }
+
+    //  GDAL_NODATA
+    if (TIFFGetField(in, 0xa481, &count, &data))
+    {
+        TIFFSetField(out, 0xa481, count, data);
     }
 }
 
