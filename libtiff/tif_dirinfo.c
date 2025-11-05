@@ -328,6 +328,8 @@ static const TIFFField tiffFields[] = {
     /* end TIFF/EP tags */
 #endif
     /* begin TIFF/FX tags */
+
+#ifdef GEOTIFF
     {TIFFTAG_INDEXED, 1, 1, TIFF_SHORT, 0, TIFF_SETGET_UINT16,  FIELD_CUSTOM, 1, 0, "Indexed", NULL},
     {TIFFTAG_GLOBALPARAMETERSIFD, 1, 1, TIFF_IFD8, 0, TIFF_SETGET_IFD8,  FIELD_CUSTOM, 1, 0, "GlobalParametersIFD", NULL},
     {TIFFTAG_PROFILETYPE, 1, 1, TIFF_LONG, 0, TIFF_SETGET_UINT32,  FIELD_CUSTOM, 1, 0, "ProfileType", NULL},
@@ -347,6 +349,7 @@ static const TIFFField tiffFields[] = {
     {TIFFTAG_GEO_GEODOUBLEPARAMS, -1, -1, TIFF_DOUBLE, 0, TIFF_SETGET_C16_DOUBLE, FIELD_CUSTOM, 1, 1, "GeoDoubleParamsTag"},
     {TIFFTAG_GEO_GEOASCIIPARAMS, -3, -3, TIFF_ASCII, 0, TIFF_SETGET_C32_ASCII, FIELD_CUSTOM, 1, 1, "GeoAsciiParamsTag"},
     {TIFFTAG_GDAL_NODATA, -3, -3, TIFF_ASCII, 0, TIFF_SETGET_C32_ASCII, FIELD_CUSTOM, 1, 1, "GDAL_NODATA"},
+#endif // GEOTIFF
     /* end TIFF/FX tags */
     /* begin pseudo tags */
 };

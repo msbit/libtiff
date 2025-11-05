@@ -348,6 +348,7 @@ static int tiffcp(TIFF *in, TIFF *out)
     CopyField(TIFFTAG_FAXSUBADDRESS, stringv);
     CopyField(TIFFTAG_FAXDCS, stringv);
 
+#ifdef GEOTIFF
     {
         void *data;
 
@@ -358,6 +359,7 @@ static int tiffcp(TIFF *in, TIFF *out)
         CopyField2(TIFFTAG_GEO_GEOASCIIPARAMS, longv, data);
         CopyField2(TIFFTAG_GDAL_NODATA, longv, data);
     }
+#endif // GEOTIFF
 
     if (TIFFIsTiled(in))
         return (cpTiles(in, out));
