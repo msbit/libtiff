@@ -64,8 +64,6 @@ static int tiffcp(TIFF *, TIFF *);
 static void newfilename(void);
 static int cpStrips(TIFF *, TIFF *);
 static int cpTiles(TIFF *, TIFF *);
-static void geotiffTagsAdd(TIFF *, TIFF *);
-static void geotiffTagsCopy(TIFF *, TIFF *);
 
 static void usage(int);
 
@@ -287,8 +285,6 @@ static int tiffcp(TIFF *in, TIFF *out)
     char *stringv;
     uint32_t longv;
 
-    geotiffTagsAdd(in, out);
-
     CopyField(TIFFTAG_SUBFILETYPE, longv);
     CopyField(TIFFTAG_TILEWIDTH, w);
     CopyField(TIFFTAG_TILELENGTH, l);
@@ -352,7 +348,16 @@ static int tiffcp(TIFF *in, TIFF *out)
     CopyField(TIFFTAG_FAXSUBADDRESS, stringv);
     CopyField(TIFFTAG_FAXDCS, stringv);
 
-    geotiffTagsCopy(in, out);
+    {
+        void *data;
+
+        CopyField2(TIFFTAG_GEO_PIXELSCALE, longv, data);
+        CopyField2(TIFFTAG_GEO_TIEPOINT, longv, data);
+        CopyField2(TIFFTAG_GEO_GEOKEYDIRECTORY, longv, data);
+        CopyField2(TIFFTAG_GEO_GEODOUBLEPARAMS, longv, data);
+        CopyField2(TIFFTAG_GEO_GEOASCIIPARAMS, longv, data);
+        CopyField2(TIFFTAG_GDAL_NODATA, longv, data);
+    }
 
     if (TIFFIsTiled(in))
         return (cpTiles(in, out));
@@ -461,46 +466,6 @@ static int cpTiles(TIFF *in, TIFF *out)
                 bufsize);
     }
     return (0);
-}
-
-static void geotiffTagsAdd(TIFF *in, TIFF *out)
-{
-    const TIFFFieldInfo custom[] = {
-        {0x830e, -1, -1, TIFF_DOUBLE, FIELD_CUSTOM, 1, 1, "ModelPixelScaleTag"},
-        {0x8482, -1, -1, TIFF_DOUBLE, FIELD_CUSTOM, 1, 1, "ModelTiepointTag"},
-        {0x87af, -1, -1, TIFF_SHORT, FIELD_CUSTOM, 1, 1, "GeoKeyDirectoryTag"},
-        {0x87b0, -1, -1, TIFF_DOUBLE, FIELD_CUSTOM, 1, 1, "GeoDoubleParamsTag"},
-        {0x87b1, -1, TIFF_VARIABLE2, TIFF_ASCII, FIELD_CUSTOM, 1, 1,
-         "GeoAsciiParamsTag"},
-        {0xa481, -1, TIFF_VARIABLE2, TIFF_ASCII, FIELD_CUSTOM, 1, 1,
-         "GDAL_NODATA"},
-    };
-
-    TIFFMergeFieldInfo(out, custom, sizeof(custom) / sizeof(*custom));
-}
-
-static void geotiffTagsCopy(TIFF *in, TIFF *out)
-{
-    uint32_t count;
-    void *data;
-
-    //  ModelPixelScaleTag
-    CopyField2(0x830e, count, data);
-
-    //  ModelTiepointTag
-    CopyField2(0x8482, count, data);
-
-    //  GeoKeyDirectoryTag
-    CopyField2(0x87af, count, data);
-
-    //  GeoDoubleParamsTag
-    CopyField2(0x87b0, count, data);
-
-    //  GeoAsciiParamsTag
-    CopyField2(0x87b1, count, data);
-
-    //  GDAL_NODATA
-    CopyField2(0xa481, count, data);
 }
 
 static void usage(int code)
